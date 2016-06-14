@@ -75,11 +75,13 @@ Problem: It's just what we asked for, but not what we want.
 
 ####Spiral
 Similar to waterfall, but with short iterations on the process
+
 Benefits:
 - Iterations involve customers
 - Riskmanagement
 - Easier to monitor project
 - Schedule projections get more realistic over time
+
 Downsides:
 - Iterations 6 to 24 months long
 - Lots of documentation
@@ -108,6 +110,76 @@ Downsides:
 - Teams are larger
 - Communication time grows with team size
 - Groups of 4 to 9, but many such groups on large projects
+- "Adding manpower to a late project makes it later"
+
+###Agile Process
+
+####The Agile Manifesto (2001)
+We are uncovering better ways of developing SW by doing it and helping others to do it. Through this work we have come to value
+- Individuals and interactions over processes & tools
+- Working software over comprehensive documentation
+- Customer collaboration over contract negotiation
+- Responding to change over following a plan
+
+That is, while there is value in the items on the right,
+we value the items on the left more.
+
+####Extreme Programming (XP)
+- Short iterations (weeks vs. years)
+- Do the *simplest* thing that could possibly work
+- Test all the time. Write tests before you write the code
+- Review code continuously by pair programming
+
+####Agile lifecycle
+- Embrace change
+- Refine prototypes
+- Test driven development, user stories, velocity (measuring progress to predict future progress)
+
+####Agile Team Management: Scrum
+- "2 pizza" team size
+- Short "standup" meeting every day (15 minutes) everyone answers 3 questions:
+    1. What have you done since yesterday?
+    2. What are you planning to do today?
+    3. Are there any impediments or stumbling blocks?
+
+##### Scrum roles
+- Team
+- Scrum Master
+    - Acts as buffer between team and external distractions
+    - Keeps team focused on task at hand
+    - Enforces team rules (coding standards)
+    - Removes impediments
+- Product Owner
+    - Prioritizes user stories
+
+##### Resolving conflicts
+- List all items on which we agree
+- Each side articulates the other's arguments
+- Constructive confrontation
+- Disagree and commit
+
+### Pair Programming
+Driver and Observer
+
+## Ruby
+
+### Conventions
+- Class names use UpperCamelCase
+- Methods and variables use snake_case
+- Boolean methods end with "?"
+- Methods with side effects end with "!"
+- Constants are in UPPERCASE
+
+### Important quirks
+- Double quoted strings can be interpolated, single quoted strings are verbatim
+- Implicit return
+- Metaprogramming: Writing and running new code *at runtime*
+
+### Regular expressions
+- use ~= to compare a string against a regular expressions
+- `"fox@berkeley.EDU" ~= /(.*)@(.*)\.edu$/i` returns true
+- `^` begins with
+- `$` end of string
 
 
 
