@@ -181,6 +181,48 @@ Driver and Observer
 - `^` begins with
 - `$` end of string
 
+### Metaprogramming & Reflection
+Metaprogramming: Write new code at runtime
+Reflection: You can ask an object questions about itself and have it modify itself at runtime
+
+`method_missing`: A special method that is called whenever an object receives a method call
+that it doesn't recognize.
+`def method_missing(method_id, *args, &block)`
+`method_missing` can be used to combine many different methods that would all
+do essentially the same thing (for example, it could be used to allow a FixNum
+to have methods to convert to many different currencies, eg `5.euros`)
+
+### Blocks and Iterators
+
+Blocks are *closures*
+
+### Duck Typing
+Ruby emphasizes "What do you do?" instead of "What class are you?"
+
+#### Modules
+Modules can be mixed into a class
+
+-`Enumerable` assumes that the target object responds to `each`
+-`sort` is a method of `Enumerable`, but it requires that the *elements* of the object respond to `<=>`.
+-`Comparable` assumes that the target object responds to `<=>`, and provides all of the other comparisons for free
+
+## Behavior-Driven Design (BDD) and Test-Driven Development (TDD)
+
+- Develop user stories (the features you wish you had)
+- Cucumber turns user stories into runnable acceptance and integration tests
+
+### Unit Testing
+Unit tests should be FIRST:
+ - Fast
+ - Independent (this can be challenging, because SaaS apps usually store data persistently)
+ - Repeatable
+ - Self-checking
+ - Timely
+
+Use RSpec for unit tests in Ruby, also set up something like autotest
+relishapp.com/rspec/rspec-expectations/docs/built-in-matchers
+
+
 
 
 
