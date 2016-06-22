@@ -161,6 +161,56 @@ we value the items on the left more.
 ### Pair Programming
 Driver and Observer
 
+## Web Architecture
+
+- The web is a *client/server* architecture.
+- The web is *request/reply* oriented.
+- TCP/IP "Transmission control protocol and Internet protocol"
+    - IP address identifies a physical network
+        - Special address 127.0.0.1 is "this computer", named `localhost`, even when not connected to the internet.
+    - TCP monitors IP packets, making sure that all of the packets are delivered, and that they are delivered in the correct order.
+        - "port number" is used by TCP to determine which data is destined for which program.
+        - Port 80 is the standard port on which web servers listen for traffic.
+- DNS "Domain name server" allows us to use meaningful names for websites rather than pure IP addresses
+- HTTP "Hypertext transfer protocol"
+    - An HTTP request includes:
+        - request method (GET, POST, etc)
+        - Uniform Resource Identifier
+        - HTTP protocol version understood by the client
+        - headers -- extra info regarding transfer request
+    - An HTTP response includes
+        - Protocol version and status code
+            - 2xx All is well
+            - 3xx resource moved
+            - 4xx access problem
+            - 5xx server error
+        - Response headers
+        - Response body
+    - HTTP requests are stateless, so to preserve state across requests, cookies are used.
+    - In Saas apps, most URIs cause a program to be run, rather than getting a static page file
+
+### Share-nothing architecture
+
+### Terminology
+- MVC (Model, View, Controller): Design pattern to describe how the Logic tier handles data
+    - Model: Handles communication with the persistance tier
+    - View: Handles presenting content to the user
+    - Controller: Handles user input
+        - User actions and inputs cause the methods of some Controller to be called (these methods are called "controller actions" to disambiguate from HTTP methods (GET, POST, etc.)
+        - Mapping the correct incoming HTTP request to the correct Controller method is called a *route*
+    - Active Record: Design pattern in which each Model knows how to perform CRUD operations on the persistance tier (Create, Read, Update, Destroy)
+- REST: Representational State Transfer: Design routes in such a way that any HTTP request contains all of the necessary information about what resource you are asking for and what actions should be performed on it.
+    - URIs and APIs thata re designed in accordance with this principle are called RESTful
+
+#### Components
+- Presentation tier: Web server (front end, Apache, Microsoft IIS, WEBrick)
+- Logic tier: App server (rack) (This is where the application code runs)
+- Persistance tier: Database
+
+A Saas application needs to do the following:
+- map the URI to the correct program
+- 
+
 ## Ruby
 
 ### Conventions
