@@ -1,6 +1,6 @@
-#Agile Software Development Using Ruby on Rails: Basics
+# Agile Software Development Using Ruby on Rails: Basics
 
-##Software as a Service (Saas)
+## Software as a Service (Saas)
 Like renting software
 Benefits:
 - No installation worries
@@ -9,10 +9,10 @@ Benefits:
 - 1 copy of large / changing data sets
 - Easier to develop
 
-###Service-oriented architecture
+### Service-oriented architecture
 Essential idea: Design software in a modular way
 
-###Hardware for Saas
+### Hardware for Saas
 Needs:
 - Communication
 - Scalability
@@ -23,32 +23,32 @@ Solution: Clusters (Regular commodity computers connected by ethernet switches)
 - Cheaper (20x!! due to economy of scale)
 - Dependable by redundancy rather than individual machine quality
 
-##Legacy code vs. beautiful code
+## Legacy code vs. beautiful code
 People in industry say: Learn to deal with legacy code!
 
-##Software quality
-###Principles
+## Software quality
+### Principles
 1. Satisfy customer needs
 2. Easy to develop
 
-###Validation vs. verification
+### Validation vs. verification
 Verification means: Did you build the thing right?
 Validation means: Did you build the right thing?
 
-###Testing
-####Levels of testing
+### Testing
+#### Levels of testing
 - Unit tests
 - Module or functional tests
 - Integration tests: Tests interfaces between units
 - Acceptance tests: Customer is satisfied
 
-####Terminology
+#### Terminology
 - Black box vs. white box testing
 - Test coverage
 - Regression testing
 - Continuous integration (CI): Continuous integration testing
 
-##Productivity
+## Productivity
 - Clarity via conciceness
     - Syntax
     - Abstraction
@@ -57,13 +57,13 @@ Validation means: Did you build the right thing?
 - Reuse
 - Automation and tools
 
-##Software Development Processes
+## Software Development Processes
 Can software development be as dependable as building a bridge?
-###Plan and Document
+### Plan and Document
 - Project manager makes a plan
 - Progress measured against the plan
 
-####Waterfall lifecycle (1970)
+#### Waterfall lifecycle (1970)
 1. Requirements analysis
 2. Architecture
 3. Implementation and integration
@@ -73,7 +73,7 @@ Can software development be as dependable as building a bridge?
 Problem: It's just what we asked for, but not what we want.
 "Throw away the first iteration...you will anyhow."
 
-####Spiral
+#### Spiral
 Similar to waterfall, but with short iterations on the process
 
 Benefits:
@@ -88,7 +88,7 @@ Downsides:
 - Cost of process is high
 - Hard to meet budget and schedule targets
 
-####Rational Unified Process (RUP)
+#### Rational Unified Process (RUP)
 Phases:
 - Inception: Business case set schedule and budget
 - Elaboration: use cases SW architecture, prototype
@@ -105,16 +105,16 @@ Downsides:
 - Only good for medium to large projects
 - Requires good judgement by project management
 
-####Project management
+#### Project management
 - Plan and develop strategy requires strong project management
 - Teams are larger
 - Communication time grows with team size
 - Groups of 4 to 9, but many such groups on large projects
 - "Adding manpower to a late project makes it later"
 
-###Agile Process
+### Agile Process
 
-####The Agile Manifesto (2001)
+#### The Agile Manifesto (2001)
 We are uncovering better ways of developing SW by doing it and helping others to do it. Through this work we have come to value
 - Individuals and interactions over processes & tools
 - Working software over comprehensive documentation
@@ -124,18 +124,18 @@ We are uncovering better ways of developing SW by doing it and helping others to
 That is, while there is value in the items on the right,
 we value the items on the left more.
 
-####Extreme Programming (XP)
+#### Extreme Programming (XP)
 - Short iterations (weeks vs. years)
 - Do the *simplest* thing that could possibly work
 - Test all the time. Write tests before you write the code
 - Review code continuously by pair programming
 
-####Agile lifecycle
+#### Agile lifecycle
 - Embrace change
 - Refine prototypes
 - Test driven development, user stories, velocity (measuring progress to predict future progress)
 
-####Agile Team Management: Scrum
+#### Agile Team Management: Scrum
 - "2 pizza" team size
 - Short "standup" meeting every day (15 minutes) everyone answers 3 questions:
     1. What have you done since yesterday?
@@ -191,16 +191,28 @@ Driver and Observer
 
 ### Share-nothing architecture
 
-### Terminology
+### Concepts
 - MVC (Model, View, Controller): Design pattern to describe how the Logic tier handles data
     - Model: Handles communication with the persistance tier
     - View: Handles presenting content to the user
-    - Controller: Handles user input
+    - Controller: Handles user input, is the intermediary between Models and Views
         - User actions and inputs cause the methods of some Controller to be called (these methods are called "controller actions" to disambiguate from HTTP methods (GET, POST, etc.)
         - Mapping the correct incoming HTTP request to the correct Controller method is called a *route*
-    - Active Record: Design pattern in which each Model knows how to perform CRUD operations on the persistance tier (Create, Read, Update, Destroy)
+        - Routes come in the form `<HTTP method, URI>`. For example, `GET /movies/3`
+    - Active Record: Design pattern in which each Model knows how to perform CRUD operations on the persistance tier for itself (Create, Read, Update, Destroy)
 - REST: Representational State Transfer: Design routes in such a way that any HTTP request contains all of the necessary information about what resource you are asking for and what actions should be performed on it.
     - URIs and APIs thata re designed in accordance with this principle are called RESTful
+    - "Don't think of a URI as naming a page, or an action--instead think of it as naming a *resource*, and the thing that you want to do with that resource."
+- Marshalling / serialization: Changing the format of data so that you can do something with it.
+    Usually, the term is used to refer to converting a piece of data from an *in-memory* representation to an *in-storage* representation.
+    (For example, if you are storing the value of a variable into a database)
+
+### Relational databases
+Rails Models store data in *Relational Databases*
+- Each Model gets its own database table
+    - All rows in that table have the same structure
+    - Each row has a unique value for the primary key (In Rails, this is an integer called `id`)
+- The collection of all tables and their structure is called the *Schema*
 
 #### Components
 - Presentation tier: Web server (front end, Apache, Microsoft IIS, WEBrick)
@@ -209,7 +221,17 @@ Driver and Observer
 
 A Saas application needs to do the following:
 - map the URI to the correct program
-- 
+
+#### The MVC pattern
+
+In the MVC pattern, the Model handles reading and writing data to the persistance tier. Each type of "thing" the app manipulates will have it's own type of model
+
+The Views handle presenting data to the user. Each "thing" may have several views associated with it.
+
+The Controllers mediate the interaction between the user and the Models. Each "thing" will have it's own Controller associated with it.
+
+Depending on the structure of your app, there may be interrelations between the Models and Controllers of your app.
+(For example, if yuo're talking about a movie review, you're also going to need to talk about the movie itself, and which user reviewed the movie.)
 
 ## Ruby
 
@@ -271,6 +293,24 @@ Unit tests should be FIRST:
 
 Use RSpec for unit tests in Ruby, also set up something like autotest
 relishapp.com/rspec/rspec-expectations/docs/built-in-matchers
+
+## Sinatra
+Sinatra has several built-in hashes:
+- `session[]` records values that you want to persist across many requests
+- `flash[]` records values that you want to persist only until the *next* request (like error messages)
+- `params[]` records any non-blank form fields that were submitted with the request. Each key in the hash is the `name` attribute of one of the form fields.
+
+## Cucumber / Capybara
+- Cucumber acceptance tests are put in a `features` folder and are written in `.feature` files, e.g. `/features/start_new_game.feature`
+- Each `.feature` file begins with `Feature: <description>`
+- Under that `Feature`, one or more `Scenario`s can be specified
+- Test cases for each scenario are laid out using the words `Given`, `When`, `And`, and `Then`. These are actually all aliases for the same underlying method
+- Each cucumber test case calls one test case ("step") from the `game_steps.rb` based on matching a regex, and runs that test case
+    - QUESTION: How does Cucumber know where to look for `game_steps.rb` file?
+- If we want to "intercept" a request coming from our app to an external service and fake a return value, we can use the `stub_request().to_return()` technique (see the `hw-sinatra-saas-hangperson` app for an example).
+- In Capybara, the command `save_and_open_page` is provided by the `launchy` gem and causes a browser to open showing what the app looks like at that point in execution.
+
+## Rails
 
 
 
