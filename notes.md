@@ -312,6 +312,182 @@ Sinatra has several built-in hashes:
 
 ## Rails
 
+- In Rails, Template Views are done in a language called Haml or erb
+### Basics
+- Models are subclasses of `ActiveRecord::Base`
+- Views are subclasses of `ActionView`
+- Controllers are subclasses of `ApplicationController`
+
+### Trip through a Rails App
+- Routes (in `routes.rb`) map incoming URL's to *controller actions* and extract any optional *parameters* (Route's "wildcard parameters" and anything after `?` are put into `params[]` hash accesible in controller actions)
+- The controller does some computation, and any instance variables that are set inside the controller are automatically usable by the view (this is done in the background by metaprogramming).
+- As long as there is a view that has the same name as the controller action,
+there is no need to specify where to look for the view, it will render
+the correct view automatically. (In order for this to work, there needs to be
+matching names for the model, view, and controller. e.g., there is a model called
+`app/models/movie.rb`, a folder `app/views/movies` for storing views related to `movies`, and
+a Controller named `controllers/movies_controller.rb`)
+
+### Model
+Models subclass from `ActiveRecord::Base`
+
+A database table name is created automatically when a model is created.
+They are created with matching names. E.g. if you create a model
+called `Movie`, there will be a database table called `movies`. (This is
+an example of "Convention over configuration").
+
+Database table column names are getters and setter for model attributes. Note:
+The getters and setters do NOT simply modify instance variables! They actually
+automatically talk to the database. (You need to call `save` or `save!` on an
+AR model instance to actually save the changes to the database. The `!` version
+throws an exception if the operation fails, the regular one just returns `nil`).
+
+If `x.id` is `nil` or `x.new_record?` is true, it means that you haven't saved
+`x` yet.
+
+#### Databases and Migrations
+Focus question: How do we avoid messing it up when we experiment with new
+features? How do we track and manage *schema changes*? Answer: Automation!
+
+In Rails, development, production, and test environments each have their own
+DB, because different DB types are appropriate for each environment.
+
+Migrations are done by Ruby code, and you can test the migration in the test
+environment. Once you are satisfied that it is working properly, you can just do
+the same migration in the production environment.
+
+Advantages of this technique:
+- Can identify each migration and know which ones applied and when, using
+version control.
+- Automated == reliably repeatable
+
+To create a new migration, Rails uses another code generator:
+`rails generate migration CreateMovies`
+
+The Migration has two pre-defined empty methods, `up` and `down`, and you have
+to fill in the bodies of those methods. The `up` method describes how to go to
+the next version of the database, and the `down` method describes how to reverse
+that change.
+
+To apply the migration to the development environment, run `rake db:migrate`.
+Then, to apply it to the production environment, run `heroku rake db:migrate`.
+The database keeps track of which migrations have already happened, so if you
+say `rake db:migrate` and the migration has already happened, it
+won't duplicate the work.
+
+To add a new model to a Rails app:
+1. Create a migration describing the changes (`rails generate migration` gives
+you boilerplate)
+2. Apply the migration (`rake db:migrate`)
+3. If it's a new model, create the model file in `app/models`
+4. Update test DB schema (`rake db:test:prepare`). If you forget to do this,
+your tests will start failing, because the testing environment has it's own
+database, which needs to be set up separately. The reason for this is that tests
+can be destructive, and you want to be able to test your app without destroying
+important data
+
+#### CRUD operations
+1. Create: `Movie.create` combines `new` and `save`
+2. Read: 
+    - `Movie.where("rating='PG'")`
+        - You can provide a hash if you want to interpolate values:
+            - `Movie.where('rating = :rating', :rating => 'PG')`
+        - Don't do this, this is a bad idea: `Movie.where("rating=#{rating}")`
+        - Bad because of SQL insertion attacks.
+        - `Movie.where` doesn't actually execute the db query until you dereference
+            the object. This means that `where` can be chained:
+            `Movie.where().where()`
+    - Find by id: `Movie.find(3)` (exception if not found) or `Movie.find_by_id(3)` (nil if not found)
+    - Dynamic: `Movie.find_by_title`, `Movie.find_by_title_and_rating` (these are implemented using `method_missing` metaprogramming)
+3. Update:
+    - Let `m = Movie.find_by_title("The Help")`
+    - Modify attributes then save the object
+        - `m.release_date = '2011-Aug-10'`
+        - `m.save!`
+    - Update attributes on existing objects
+        - `m.update_attributes :release_date => '2011-Aug-10'`
+4. Destroy:
+    - Several ways to do it, but the best way is by using the instance method
+    `destroy`.
+    - E.g. `m.destroy`
+    - The reason to do this is because, if you delete a movie, there might
+    be other data in your app (such as reviews) that connect to that movie,
+    and the `destroy` call allows us to do some other cleanup. `destroy` does
+    *not* delete the in-memory object, but it does modify the setter methods
+    so that they raise an exception (because there's no longer anything in the
+    database to modify)
+    - There is a `delete` method as well, but it is like writing raw SQL, and
+    doesn't automatically perform any cleanup.
+
+### Controller
+
+#### Cookbook
+
+To add a new action to a Rails app
+1. Create *route* in `config/routes.rb` if needed
+2. Add the action (method) in the appropriate `app/controllers/*_controller.rb`
+3. Ensure that there is something for the action to render in `app/views/<model>/<action>.html.haml
+
+#### Details
+- When you set an instance variable in a controller method, that instance
+variable also becomes available to the view.
+- Controller actions are called by following routes
+- Unless you say otherwise, at the end of a controller action (method), Rails
+will look for a view with that same name as the controller action (for example
+`views/movies/show.html.haml`.
+
+### Forms
+Creating a resource usually takes 2 interactions:
+1. `new`: retrieve the blank form
+2. `create`: submit the filled form
+
+Similarly, updating a resource takes 2 interactions:
+1. `edit`: Show the form to the user with *existing values filled in*
+2. `update`: Submit form, modify model, and redirect user
+
+Note: To update, the form action should be `PUT` instead of `POST`
+#### Cookbook
+
+To create a new submittable form:
+1. Identify the action that serves the form itself
+2. Identify the action that receives the *submission*
+3. Create routes, actions, views for each
+
+`name` attributes from form elements appear as keys in `params[]`
+
+#### Details
+
+Only *named* form inputs will be submitted
+
+Rails has functionality for generating the form. You can use the URI helper for
+the form *action*, since the URI helper generates the correct URI (you still
+need to manually input the form *method* if you do this, though.)
+
+Often, the `create` controller action doesn't have a view of its own. Instead,
+it will redirect to a more useful view (for example, if you submit a form to
+create a new movie, you will be redirected to the index view)
+
+The `flash[]` hash contains information that persists until the *end of the next
+request*. `flash[:notice]` is conventionally used for information,
+`flash[:warning]` for errors.
+
+
+## Debugging
+
+When working on Saas, debugging can be challenging because there is no terminal
+to print to.
+
+### Debugging techniques:
+- In views, `= debug(@movie)` or `= @movie.inspect` can be used to "print" string
+representations of objects into your view for debugging purposes.
+- Controller methods can write to log files: `logger.debug(@movie.inspect)`
+- Use `rails console`
+
+### RASP
+- Read the error messages
+- Ask a colleague an informed question
+- Search on the internet (StackOverflow, Google, etc)
+- Post on StackOverflow
 
 
 
